@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Assignment Maximizer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <h1>Assignment Maximizer</h1>
+    <p>Maximize your expected marks within limited time using 0/1 Knapsack</p>
+  </header>
+
+  <main class="layout">
+    <section class="card">
+      <h2>Your time</h2>
+      <label for="availableTime">Available Time (hours)</label>
+      <input type="number" id="availableTime" min="1" step="1" placeholder="e.g. 10">
+    </section>
+
+    <section class="card">
+      <h2>Add an assignment</h2>
+      <div class="form-grid">
+        <div>
+          <label for="name">Assignment name</label>
+          <input type="text" id="name" placeholder="e.g. Assignment 1">
+        </div>
+        <div>
+          <label for="time">Time required (hours)</label>
+          <input type="number" id="time" min="1" step="1" placeholder="e.g. 2">
+        </div>
+        <div>
+          <label for="marks">Expected marks</label>
+          <input type="number" id="marks" min="0" step="any" placeholder="e.g. 20">
+        </div>
+      </div>
+      <div class="actions">
+        <button id="addBtn" class="btn">Add Assignment</button>
+        <button id="sampleBtn" class="btn btn-ghost">Load Sample Data</button>
+        <button id="clearBtn" class="btn btn-ghost">Clear All</button>
+      </div>
+      <p id="formError" class="error" role="alert" hidden></p>
+    </section>
+
+    <section class="card wide">
+      <h2>Assignments</h2>
+      <div class="scroll">
+        <table id="assignmentTable">
+          <thead>
+            <tr><th>Number</th><th>Assignment Name</th><th>Time Required</th><th>Expected Marks</th><th>Marks/Time Ratio</th><th>Delete</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="hint">The ratio is shown for information only. The selection comes from 0/1 Knapsack DP, not from the ratio.</p>
+      <button id="solveBtn" class="btn btn-big">Find Maximum Marks</button>
+      <p id="solveError" class="error" role="alert" hidden></p>
+    </section>
+
+    <section id="results" class="card wide" hidden>
+      <h2>Result</h2>
+      <div class="stats">
+        <div class="stat best"><span id="rMarks">0</span><small>Maximum Expected Marks</small></div>
+        <div class="stat"><span id="rUsed">0</span><small>Total Time Used (hours)</small></div>
+        <div class="stat"><span id="rLeft">0</span><small>Remaining Time (hours)</small></div>
+      </div>
+      <p id="rNote" class="note" hidden></p>
+      <div class="two-col">
+        <div>
+          <h3>Selected Assignments</h3>
+          <ul id="selectedList" class="list"></ul>
+        </div>
+        <div>
+          <h3>Unselected Assignments</h3>
+          <ul id="unselectedList" class="list"></ul>
+        </div>
+      </div>
+
+      <h2 class="spaced">Dynamic Programming Table</h2>
+      <div class="scroll dp-wrap"><table id="dpTable"></table></div>
+      <p class="hint">Each cell represents the maximum marks achievable using the assignments considered so far for the given amount of available time.</p>
+      <p class="legend">
+        <span class="key final"></span> Final optimal value dp[n][T]
+        <span class="key path"></span> Cells visited during backtracking
+        <span class="key pick"></span> Row where an assignment was selected
+      </p>
+    </section>
+
+    <section class="card wide">
+      <h2>How the Algorithm Works</h2>
+      <ol class="steps">
+        <li>Each assignment is treated as an item.</li>
+        <li>Assignment time is the weight.</li>
+        <li>Expected marks are the value.</li>
+        <li>Available student time is the knapsack capacity.</li>
+        <li>Dynamic Programming calculates the maximum marks using <code>dp[i][t] = max(dp[i-1][t], marks[i] + dp[i-1][t - time[i]])</code>.</li>
+        <li>Backtracking identifies the assignments that produced the optimal solution: starting at <code>dp[n][T]</code>, if <code>dp[i][t] != dp[i-1][t]</code> assignment i was selected and t shrinks by its time.</li>
+        <li>The result is displayed to the student.</li>
+      </ol>
+      <p><strong>Time Complexity:</strong> O(n × T) &nbsp; <strong>Space Complexity:</strong> O(n × T)<br>
+      <small>n = number of assignments, T = available time</small></p>
+    </section>
+
+    <section class="card wide">
+      <h2>Why 0/1 Knapsack?</h2>
+      <p>Choosing assignments is a real-world optimization problem. Each assignment has a time cost and an expected mark value, and the student has a limited time capacity. An assignment is either done fully or not at all, which is exactly the 0/1 restriction.</p>
+      <p><strong>Algorithm:</strong> 0/1 Knapsack + Dynamic Programming + Backtracking<br>
+      <strong>Time Complexity:</strong> O(n × T) &nbsp; <strong>Space Complexity:</strong> O(n × T)</p>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
